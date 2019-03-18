@@ -1,0 +1,30 @@
+{
+  "main": "ticker.js",
+  "name": "lan-ns-ticker",
+  "version": "1.0.0",
+  "description": "Javascript client that notifies LanNS service at specified intervals that the web server / service on the local network is running.",
+  "dependencies": {
+  	 "request": ">= 2.81.0"    
+  },
+  "scripts": {
+  },
+  "engines": {
+    "node": ">= 6.0.0"
+  },
+  "bugs": "https://github.com/ollikekalainen/lan-ns-ticker/issues",
+  "keywords": [
+    "javascript",
+    "redirect",
+    "private ip",
+    "LAN",
+    "local network",
+    "web service client"
+  ],
+    "repository": {
+    "type": "git",
+    "url": "git://github.com/ollikekalainen/lan-ns-ticker.git"
+  },
+  "homepage": "https://github.com/ollikekalainen/lan-ns-ticker",
+  "author": "Olli Kekäläinen",
+  "license": "MIT"
+}
