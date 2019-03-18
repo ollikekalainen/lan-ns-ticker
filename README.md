@@ -18,25 +18,25 @@ npm install lan-ns-ticker
 
 ### Options
 
-	url: <string>						// LanNS Service url
-	appName: <string>
-	appDescription: <string>			// default: ""
-	appPort: <number>
-	appUrlPath: <string>				// default: ""
-	appProtocol: <string>				// default: "http"
-	refreshIntervalInSeconds: <number>	// default: 60, min: 30
-	expireTimeInSeconds: <number> 		// default: 120, min: 2*refreshIntervalInSeconds
+    url: <string>                       LanNS Service url
+    appName: <string>
+    appDescription: <string>            default: ""
+    appPort: <number>
+    appUrlPath: <string>                default: ""
+    appProtocol: <string>               default: "http"
+    refreshIntervalInSeconds: <number>  default: 60, min: 30
+    expireTimeInSeconds: <number>       default: 120, min: 2*refreshIntervalInSeconds
      
 
 ### Methods
 
-	start( onError )
-
-		Starts the ticker object to sending notifications to LanNS service with specified intervals.
-	 	onError		function(error)
-
-	 stop()
-	 	Stop the ticker notifications.
+    start( onError )
+        onError  function(error)
+	    
+        Starts the ticker object to sending notifications to LanNS service with specified intervals.
+        
+    stop()
+        Stops the ticker notifications.
 
 
 ### Example
@@ -52,6 +52,6 @@ npm install lan-ns-ticker
         refreshIntervalInSeconds: 60,
         expireTimeInSeconds: 180
     }).start(( error ) => { console.log( error ); });
-     
+
 
 
