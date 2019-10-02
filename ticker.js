@@ -71,6 +71,10 @@
 		}
 
 		pulse( onError = ((e) => {console.log(e);})) {
+			const ip = getPrivateIp();
+			if (!ip) {
+				return;
+			}
 			let body = {
 				name: "pulse",
 				parameters: {
@@ -82,7 +86,7 @@
 					urlpath: this.appUrlPath,
 					protocol: this.appProtocol,
 					port: this.appPort,
-					privateip: getPrivateIp() 
+					privateip: ip 
 				}
 			};
 			try {
