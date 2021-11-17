@@ -25,7 +25,7 @@
 		);
 
 
- 20190318
+ 20211117
 -----------------------------------------------------------------------------------------
 */
 (() => {
@@ -33,7 +33,7 @@
 	"use strict";
 
     const os = require("os");
-	const request = require("request");
+	const axios = require("axios");
 
 	class LanNSTicker {
 
@@ -41,7 +41,7 @@
 			this.appName = params.appName;
 			this.appDescription = params.appDescription||"";
 			this.appPort = params.appPort;
-			this.appProtocol = params.appProtocol;
+			this.appProtocol = params.appProtocol||"http";
 			this.appUrlPath = params.appUrlPath;
 			this.refreshIntervalInSeconds = Math.max( 30, params.refreshIntervalInSeconds||60 );
 			this.url = params.url;
@@ -75,7 +75,7 @@
 			if (!ip) {
 				return;
 			}
-			let body = {
+			const data = {
 				name: "pulse",
 				parameters: {
 					appname: this.appName,
@@ -89,51 +89,9 @@
 					privateip: ip 
 				}
 			};
-			try {
-				body = JSON.stringify(body);
-			}
-			catch (error) {
-				onError(error);
-				return;
-			}
-
-			try {
-				request.post( 
-					{
-						url: this.url + "/api",
-						body: body,
-						headers: {
-							"User-Agent": "LanNS Client",
-						 	"Content-Type": "text/plain",
-							"Content-Length": body.length
-						},
-						timeout: 20000,
-						jar: true,
-						followAllRedirects: true,
-						followOriginalHttpMethod: true
-					}, 
-					function ( error, response, body ) {
-						if (!error) {
-				        	try {
-				            	const json = JSON.parse(body);
-				            	if (json.succeed === false) {
-				            		onError(json.error);
-				            	}
-				            }
-				            catch (error) {
-				            	onError(error);
-				            }
-						}
-						else {
-							onError( "Problem with LanNS request: " + error.message );
-						}
-					}
-				);
-			}
-			catch (error) {
-				onError(error);
-				return;
-			}
+			axios.post( this.url + "/api", data, { timeout: 20000 }
+			).then( response => { response.data.succeed || onError(response.data.error);}
+			).catch( error => { onError( "Problem with LanNS request: " + error.message );});
 		}
 	}
 
