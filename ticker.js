@@ -16,7 +16,10 @@
 			appUrlPath: <string>,				// default: ""
 			appProtocol: <string>,				// default: "http"
 			refreshIntervalInSeconds: <number>,	// default: 60, min: 30
-			expireTimeInSeconds: <number> 		// default: 120, min: 2*refreshIntervalInSeconds
+			expireTimeInSeconds: <number>, 		// default: 120, min: 2*refreshIntervalInSeconds
+    		networkInterfaceFilter: <string>    // default: "", e.g. "Local Area Connection" (Usefull when excluding 
+    											// private IP addresses for virtual Ethernet adapters. Can be also
+    											// a semicolon-separated list of interface names.)
 		});
 
 		ticker.start(
@@ -43,6 +46,7 @@
 			this.appPort = params.appPort;
 			this.appProtocol = params.appProtocol||"http";
 			this.appUrlPath = params.appUrlPath;
+			this.networkInterfaceFilter = params.networkInterfaceFilter||"";
 			this.refreshIntervalInSeconds = Math.max( 30, params.refreshIntervalInSeconds||60 );
 			this.url = params.url;
 			this.expireTimeInSeconds = Math.max( this.refreshIntervalInSeconds*2, params.expireTimeInSeconds||120 );
@@ -71,7 +75,7 @@
 		}
 
 		pulse( onError = ((e) => {console.log(e);})) {
-			const ip = getPrivateIp();
+			const ip = this.#solvePrivareIp();
 			if (!ip) {
 				return;
 			}
@@ -93,16 +97,22 @@
 			).then( response => { response.data.succeed || onError(response.data.error);}
 			).catch( error => { onError( "Problem with LanNS request: " + error.message );});
 		}
-	}
 
-	function getPrivateIp() {
-	    for (let addresses of Object.values( os.networkInterfaces())) {
-	        for (let add of addresses) {
-	            if(add.address.startsWith("192.168.")) {
-	                return add.address;
-	            }
-	        }
-	    }
+		#solvePrivareIp() {
+			let address;
+			let filter = this.networkInterfaceFilter.trim();
+			filter && (filter = filter.split(";"));
+			const isValid = name => !filter || !!filter.find(filter => name.startsWith(filter.trim()));  
+			let i = 0;
+			Object.entries( os.networkInterfaces()).forEach(([name,interfaces]) => { 
+				if (!address && isValid(name)) {
+					const iface = interfaces.find( iface => iface.address.startsWith("192.168."));
+					iface && (address = iface.address);
+				}
+			});
+			return address;
+		}
+
 	}
 
 	module.exports = LanNSTicker;

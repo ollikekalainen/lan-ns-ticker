@@ -1,7 +1,7 @@
 {
   "main": "ticker.js",
   "name": "lan-ns-ticker",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Javascript client that notifies LanNS service at specified intervals that the web server / service on the local network is running.",
   "dependencies": {
   	 "axios": ">= 0.24.0"    

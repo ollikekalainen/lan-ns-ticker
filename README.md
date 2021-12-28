@@ -26,6 +26,7 @@ npm install lan-ns-ticker
     appProtocol: <string>               default: "http"
     refreshIntervalInSeconds: <number>  default: 60, min: 30
     expireTimeInSeconds: <number>       default: 120, min: 2*refreshIntervalInSeconds
+    networkInterfaceFilter: <string>    default: "", e.g. "Local Area Connection" (Usefull when excluding private IP addresses for virtual Ethernet adapters. Can be also a semicolon-separated list of interface names.)
      
 
 ### Methods
