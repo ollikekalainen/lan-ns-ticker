@@ -28,7 +28,24 @@
 		);
 
 
- 20211117
+ 	Releases:
+
+		1.0.4
+			The use of the Axios package was replaced by using the native request function 
+			of the node.js HTTP and HTTPS interfaces.
+
+		1.0.3
+			Added networkInterfaceFilter option.
+
+		1.0.2
+			The outdated Request package was discarded and Axios was introduced instead
+
+		1.0.1
+			LanNS Ticker does not send a pulse request to the LanNS server when 
+			a private IP address is not provided.
+
+
+ 20231031
 -----------------------------------------------------------------------------------------
 */
 (() => {
@@ -36,7 +53,7 @@
 	"use strict";
 
     const os = require("os");
-	const axios = require("axios");
+	const OkRequest = require("./lib/ok-request");
 
 	class LanNSTicker {
 
@@ -89,13 +106,31 @@
 					port: this.appPort,
 					urlpath: this.appUrlPath,
 					protocol: this.appProtocol,
-					port: this.appPort,
 					privateip: ip 
 				}
 			};
-			axios.post( this.url + "/api", data, { timeout: 20000 }
-			).then( response => { response.data.succeed || onError(response.data.error);}
-			).catch( error => { onError( "Problem with LanNS request: " + error.message );});
+			this.#send( onError, () => {}, data );
+		}
+
+		#send( onError, onSuccess, data ) {
+			new OkRequest({ url: this.url + "/api" }).post(
+				(error) => { onError( "Problem with LanNS request: " + error.message );}, 
+				( response, data ) => { 
+					try {
+						data = JSON.parse(data);
+					}
+					catch (error) {
+						data.error = error;
+						data.succeed = false;
+					}
+					if (data.succeed) 
+						onSuccess();
+					else {
+						onError(data.error);
+					}
+				},
+				JSON.stringify(data)
+			);
 		}
 
 		#solvePrivareIp() {
@@ -112,7 +147,6 @@
 			});
 			return address;
 		}
-
 	}
 
 	module.exports = LanNSTicker;
